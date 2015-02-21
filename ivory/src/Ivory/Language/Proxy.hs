@@ -1,13 +1,15 @@
+{-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE PolyKinds #-}
 {-# LANGUAGE KindSignatures #-}
 {-# LANGUAGE ConstraintKinds #-}
+{-# LANGUAGE TypeOperators #-}
 
 module Ivory.Language.Proxy where
 
 #if __GLASGOW_HASKELL__ >= 708
-import GHC.TypeLits (natVal, symbolVal, Symbol, Nat, KnownNat, KnownSymbol)
+import GHC.TypeLits (natVal, symbolVal, Symbol, Nat, KnownNat, KnownSymbol, type (<=))
 #else
 import GHC.TypeLits (Sing, SingI, sing, fromSing, Symbol, Nat)
 #endif
@@ -20,7 +22,7 @@ type SProxy a = Proxy (a :: *)
 --------------------------------------------------------------------------------
 #if __GLASGOW_HASKELL__ >= 708
 
-type ANat    n = (KnownNat n)
+type ANat    n = (KnownNat n, 1 <= n)
 type NatType n = Proxy n
 aNat :: KnownNat n => Proxy n
 aNat = Proxy
