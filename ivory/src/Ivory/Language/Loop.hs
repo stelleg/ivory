@@ -58,7 +58,9 @@ downTo = loop AST.DecrTo
 -- Indexes increment from 0 to n-1 incluseively.
 for :: forall eff n a. ANat n
     => Ix n -> (Ix n -> Ivory (E.AllowBreak eff) a) -> Ivory eff ()
-for n f = upTo 0 (n-1) f
+for n f = ifte_ (0 ==? n)
+  (return ())
+  (upTo 0 (n-1) f)
 
 -- | Run the computation n times, where
 -- @
@@ -67,7 +69,9 @@ for n f = upTo 0 (n-1) f
 -- Indexes decrement from n-1 to 0 inclusively.
 times :: forall eff n a. ANat n
       => Ix n -> (Ix n -> Ivory (E.AllowBreak eff) a) -> Ivory eff ()
-times n f = downTo (n-1) 0 f
+times n f = ifte_ (0 ==? n)
+  (return ())
+  (downTo (n-1) 0 f)
 
 arrayMap :: forall eff n a . ANat n
          => (Ix n -> Ivory (E.AllowBreak eff) a) -> Ivory eff ()
