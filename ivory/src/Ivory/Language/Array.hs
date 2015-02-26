@@ -6,6 +6,7 @@
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE ConstraintKinds #-}
 {-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE GADTs #-}
 
 module Ivory.Language.Array where
 
@@ -35,7 +36,11 @@ ixRep :: I.Type
 ixRep = ivoryType (Proxy :: Proxy IxRep)
 
 -- | Values in the range @0 .. n-1@.
-newtype Ix (n :: Nat) = Ix { getIx :: I.Expr }
+data Ix (n :: Nat) where
+  Ix :: ANat n => I.Expr -> Ix n
+
+getIx :: Ix n -> I.Expr
+getIx (Ix e) = e
 
 instance (ANat n) => IvoryType (Ix n) where
   ivoryType _ = I.TyIndex (fromTypeNat (aNat :: NatType n))
